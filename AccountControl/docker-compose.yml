@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    environment:
+      DATABASE_URL: jdbc:h2:mem:bankdb
+      DATABASE_USER: sa
+      DATABASE_PASSWORD:
+    ports:
+      -  "8080:8080"
