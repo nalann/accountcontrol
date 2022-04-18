@@ -37,3 +37,5 @@ docker images
 ddocker image rm <image id>
   
 **NOTE** You can find postman exported json file in the "doc" folder.
+
+<sub>*development is ongoing for microservice structure...*</sub>
