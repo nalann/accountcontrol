@@ -11,6 +11,8 @@ import com.account.control.model.request.NewTransactionRequest;
 import com.account.control.repository.AccountRepository;
 import com.account.control.repository.CustomerRepository;
 import com.account.control.repository.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,10 @@ public class TransactionService {
     @Autowired
     AccountRepository accountRepository;
 
+    Logger logger = LoggerFactory.getLogger(TransactionService.class);
+
     public TransactionDto createNewTransaction(NewTransactionRequest newTransactionRequest){
+        logger.info("New Transaction creation started");
         Optional<Customer> customer = customerRepository.findById(newTransactionRequest.getCustomerId());
         if(customer.isPresent()){
             //Using last created account which has enough limit to transaction.
@@ -40,6 +45,8 @@ public class TransactionService {
                             customer.get(),
                             newTransactionRequest.getTransactionAmount());
             if(account == null){
+                logger.error("Account not found or customer does not have enough initial credit " +
+                        "for this transaction in their account");
                 throw new NotEnoughBalanceException("Not enough balance for this customer: "
                         + newTransactionRequest.getCustomerId());
             }
@@ -58,9 +65,11 @@ public class TransactionService {
                     .transactionDate(LocalDateTime.now())
                     .transactionDetail(newTransactionRequest.getDetail())
                     .build();
+            logger.debug("transaction created : " + transaction);
             return transactionConverter.convertTransactionToDto(transactionRepository.save(transaction));
         }
         else{
+            logger.error("customer not found");
             throw new CustomerNotFoundException("Customer not found: " + newTransactionRequest.getCustomerId());
         }
     }

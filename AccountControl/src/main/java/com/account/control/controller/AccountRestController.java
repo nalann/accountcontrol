@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,8 @@ public class AccountRestController {
     @Autowired
     AccountService accountService;
 
+    Logger logger = LoggerFactory.getLogger(AccountRestController.class);
+
     @Operation(summary = "Create New Account", description = "Create new account for existing customer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "successfully created",
@@ -45,8 +49,10 @@ public class AccountRestController {
         try {
             return new ResponseEntity<>(accountService.createNewAccount(createAccountRequest), HttpStatus.CREATED);
         } catch (CustomerNotFoundException exception){
+            logger.error("Exception" + exception.getMessage());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception exception){
+            logger.error("Exception: " + exception.getMessage());
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

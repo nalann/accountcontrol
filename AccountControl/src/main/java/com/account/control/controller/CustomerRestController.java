@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ public class CustomerRestController {
     @Autowired
     CustomerService customerService;
 
+    Logger logger = LoggerFactory.getLogger(CustomerRestController.class);
+
     @Operation(summary = "Get all customer information", description = "Get All Customer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successful result",
@@ -36,6 +40,7 @@ public class CustomerRestController {
         try {
             return ResponseEntity.ok(customerService.findAllCustomers());
         } catch (Exception exception){
+            logger.error("Exception: " + exception.getMessage());
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -52,8 +57,10 @@ public class CustomerRestController {
         try {
             return ResponseEntity.ok(customerService.findCustomer(id));
         } catch (CustomerNotFoundException exception) {
+            logger.error("Exception: " + exception.getMessage());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception exception){
+            logger.error("Exception: " + exception.getMessage());
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
