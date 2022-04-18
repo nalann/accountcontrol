@@ -37,5 +37,7 @@ docker images
 ddocker image rm <image id>
   
 **NOTE** You can find postman exported json file in the "doc" folder.
+  
+**NOTE** You can access swagger by using this link http://localhost:8080/swagger-ui/ in your local machine.
 
 <sub>*development is ongoing for microservice structure...*</sub>
